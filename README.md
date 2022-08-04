@@ -11,17 +11,13 @@ This branch is 'Raw16', where we perform lossless compression for 16-bit CFA sam
 ### LC-FDNet++ for CFA raw image compression
 <p align="center"><img src="figure/bayer.PNG" width="200"></p>
 
-We perform lossless image compression for raw images in this branch. Specifically, we execute compression for 8-bit CFA sampled images, which are sampled by the above bayer pattern.
+We perform lossless image compression for raw images in this branch. Specifically, we execute compression for 16-bit raw images, which are in the form of RGGB.
 
 ## Experimental Results
 
-<p align="center"><img src="figure/raw_table.PNG" width="800"></p>
+<p align="center"><img src="figure/raw16_result.PNG" width="800"></p>
 
-Compression result on 8-bit CFA sampled dataset.
-
-<p align="center"><img src="figure/kodak_result.PNG" width="1000"></p>
-
-Compression result on CFA simulated Kodak samples.
+Compression result on 16-bit raw dataset.
 
 ## Dataset
 Train Dataset
