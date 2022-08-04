@@ -93,6 +93,27 @@ Test Dataset
 
 We use 'torchac' library as our arithmetic coder, which is available at https://github.com/fab-jul/torchac.
 
+## Dataset directory guideline
+
+Your dataset directory should look something like the following
+
+```
+|── dataset
+    ├──> div2k 
+         ├──> train
+         └──> test  
+    ├──> div2k_down2
+    ├──> div2k_down3    
+    ├──> div2k_down4 
+    ├──> flickr
+    ├──> flickr_down2
+    ├──> flickr_down3    
+    ├──> flickr_down4     
+
+```
+
+Note that we do not provide an automatic code for generating the downsample version of the dataset.
+
 ## Guidelines for Training / Evaluation Codes
 
 1. Install JPEG-XL
