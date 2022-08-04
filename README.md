@@ -1,9 +1,3 @@
-# LC-FDNet++
-
-# [Lossless Compression of RGB and Raw Imags by Learning the Prediction and Frequency Decomposition]
-
-Hochang Rhee, Seyun Kim, Nam Ik Cho
-
 ## About Branches
 We provide 3 branches, where each branch is the code of the following implementation.
 
@@ -11,36 +5,11 @@ We provide 3 branches, where each branch is the code of the following implementa
 - Raw : Implementation for 8-bit raw image compression
 - Raw16 : Implementation for 16-bit raw image compression
 
-## Environments
-- Ubuntu 18.04
-- Pytorch 1.7.0
-- CUDA 10.0.130 & cuDNN 7.6.5
-- Python 3.7.7
 
-You can type the following command to easily build the environment.
-Download 'lcfdnet_plus_env.yml' and type the following command.
+### LC-FDNet++ for CFA raw image compression
+<p align="center"><img src="figure/bayer.PNG" width="500"></p>
 
-```
-conda env create -f lcfdnet_plus_env.yml
-```
-
-## Abstract
-
-This paper presents a learned lossless image compression method that attempts to maximize the use of correlations from two perspectives. First, we adopt a hierarchical method for decomposing an input into subimages and proceed with the subimage encoding with a new encoding order. This enables the current pixel encoder to fully utilize the horizontal, vertical, and diagonal components of previous subimages. Secondly, for each subimage, we compress the low-frequency components first
-and use them as additional input for encoding the remaining high-frequency components. In this scenario, the high-frequency components show improved compression efficiency since they use the low-frequency ones as strong prior. In addition to improving the compression performance, we make our method robust to dataset-dependency problems, specifically the performance differences depending on the input resolution, by introducing resolution-specific kernels. Furthermore, we extend our method
-to color filter array (CFA) image compression and show that our method is also applicable to 8∼16 bits raw images. Experiments show that the proposed method achieves state-ofthe-art performance for benchmark high and low-resolution datasets along with CFA images.
-
-## Brief Description of Our Proposed Method
-### Framework of our compresion scheme
-<p align="center"><img src="figure/framework.PNG" width="900"></p>
-
-Illustration of the overall compression scheme. We first split the input into 12 subimages (four for each channel) depending on spatial location and color channel, where the border color of a subimage represents the color channel. Then, we compress the subimages one by one. The first 3 subimages (x_(Y,a), x_(U,a), x_(V,a)) are compressed using a conventional codec JPEG-XL, and the remaining 9 subimages are compressed using our LC-FDNet++. For the compression of the current subimage
-using the LC-FDNet++, previously compressed subimages are also used as inputs.
-
-### Architecture of LC-FDNet++
-<p align="center"><img src="figure/architecture.PNG" width="1000"></p>
-
-The encoder architecture of LC-FDNet++. In this figure, we consider the case of compressing y = x_(Y,d) given x_in = {x_(Y,a), x_(U,a), x_(V,a)}. The adaptive frequency decomposition (AFD) part first receives x_in and determines whether each pixel belongs to either low or high-frequency regions, using error variance map σy and error variance threshold τy that are explained in Subsection II-C. Then, the low-frequency compression (LFC) encodes the low-frequency region of the subimage y. The high-frequency compression (HFC) then receives the encoded low-frequency region as additional input and compresses the remaining high-frequency region.
+We perform lossless image compression for raw images in this branch. Specifically, we execute compression for 8-bit CFA sampled images, which are sampled by the above bayer pattern.
 
 ## Experimental Results
 
