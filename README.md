@@ -15,7 +15,7 @@ We perform lossless image compression for raw images in this branch. Specificall
 
 <p align="center"><img src="figure/raw_table.PNG" width="800"></p>
 
-Compression result on 7-bit CFA sampled dataset.
+Compression result on 8-bit CFA sampled dataset.
 
 <p align="center"><img src="figure/kodak_result.PNG" width="1000"></p>
 
