@@ -13,9 +13,13 @@ We perform lossless image compression for raw images in this branch. Specificall
 
 ## Experimental Results
 
-<p align="center"><img src="figure/result_table.PNG" width="1000"></p>
+<p align="center"><img src="figure/raw_table.PNG" width="1000"></p>
 
-Comparison of our method and other non-learning and learning-based codecs on high-resolution benchmark datasets. We measure the performances in bits per pixel (bpp). The best performance is highlighted in bold. The difference in percentage to our method is highlighted in green if ours outperform and in red otherwise.
+Compression result on 7-bit CFA sampled dataset.
+
+<p align="center"><img src="figure/kodak.PNG" width="1000"></p>
+
+Compression result on CFA simulated Kodak samples.
 
 ## Dataset
 Train Dataset
@@ -29,11 +33,6 @@ Test Dataset
 [CLIC] (http://clic.compression.cc/2019/challenge/)
 
 [Kodak] (http://r0k.us/graphics/kodak/)
-
-[McMaster] (https://www4.comp.polyu.edu.hk/~cslzhang/CDM_Dataset.htm)
-
-[Classic] (We provide the classic dataset in our repository, in the dataset/classic folder)
-
 
 
 ## Brief explanation of contents
