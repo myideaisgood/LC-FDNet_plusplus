@@ -55,7 +55,7 @@ Test Dataset
 |── model.py : architecture of LC-FDNet++
 |── eval.py : evaluate the model
 |── train.py : train the model
-└── jpegxl : folder for jpegxl library. explained below.
+└── flif : folder for flif library.
 
 ```
 
@@ -70,13 +70,9 @@ Your dataset directory should look something like the following
     ├──> div2k 
          ├──> train
          └──> test  
-    ├──> div2k_down2
-    ├──> div2k_down3    
-    ├──> div2k_down4 
-    ├──> flickr
-    ├──> flickr_down2
-    ├──> flickr_down3    
-    ├──> flickr_down4     
+    ├──> Kodak
+         ├──> train
+         └──> test   
 
 ```
 
@@ -84,9 +80,9 @@ Note that we do not provide an automatic code for generating the downsample vers
 
 ## Guidelines for Training / Evaluation Codes
 
-1. Install JPEG-XL
-   1) Download JPEG-XL from https://gitlab.com/wg1/jpeg-xl and follow the installation process
-   2) Change the directory name 'libjxl' to 'jpegxl'
+1. Install FLIF
+   1) Download FLIF from https://github.com/FLIF-hub/FLIF/blob/master/README.md and follow the installation process
+   2) Change the directory name to 'flif'
 
 2. Check configurations from config.py
 
@@ -109,8 +105,6 @@ python eval.py --gpu_num=0 --experiment_name='default/' --test_dataset='div2k/' 
    
    **** parameter empty_cache in config.py should be set to True if memory issue occurs ****
 ```
-python eval.py --gpu_num=0 --experiment_name='pretrained/' --test_dataset='div2k/' --test_downscale_ratio=2 --empty_cache=True
+python eval.py --gpu_num=0 --experiment_name='pretrained/' --test_dataset='div2k/' --empty_cache=True
 ```
-
-The following command will evaluate for dataset 'div2k' with a downsampled ratio of '2'.
-If you wish to evaluate for different dataset and different downsample ratio, just change the configuration parameter.
+If you wish to evaluate for different dataset, just change the configuration parameter.
