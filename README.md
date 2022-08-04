@@ -15,7 +15,7 @@ We perform lossless image compression for raw images in this branch. Specificall
 
 ## Experimental Results
 
-<p align="center"><img src="figure/raw16_result.PNG" width="800"></p>
+<p align="center"><img src="figure/raw16_result.PNG" width="600"></p>
 
 Compression result on 16-bit raw dataset.
 
