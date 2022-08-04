@@ -18,10 +18,10 @@ We provide 3 branches, where each branch is the code of the following implementa
 - Python 3.7.7
 
 You can type the following command to easily build the environment.
-Download 'fdnet_env.yml' and type the following command.
+Download 'lcfdnet_plus_env.yml' and type the following command.
 
 ```
-conda env create -f fdnet_env.yml
+conda env create -f lcfdnet_plus_env.yml
 ```
 
 ## Abstract
