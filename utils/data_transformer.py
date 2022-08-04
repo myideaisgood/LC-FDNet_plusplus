@@ -4,6 +4,89 @@ import torch.nn.functional as F
 import numpy as np
 import random
 
+def doCFA(img):
+
+    bayer_pattern = np.zeros_like(img)
+    bayer_pattern[0::2, 0::2] = [1,0,0]
+    bayer_pattern[1::2, 0::2] = [0,1,0]
+    bayer_pattern[0::2, 1::2] = [0,1,0]
+    bayer_pattern[1::2, 1::2] = [0,0,1]
+
+    raw_rgb_img = np.sum(img * bayer_pattern, axis=2)
+
+    return raw_rgb_img
+
+def Raw2RGGB(img):
+
+
+
+    return img
+
+def RAW2YUVD(img):
+
+    img = img.astype(np.float32)
+
+    r_img = img[0::2, 0::2]
+    g1_img = img[0::2, 1::2]
+    g2_img = img[1::2, 0::2]
+    b_img = img[1::2, 1::2]
+
+    g_img = np.floor((g1_img + g2_img)/2)
+    delta_img = g1_img - g2_img
+
+    rgb_img = np.stack((r_img, g_img, b_img), axis=-1)
+    yuv_img = RGB2YUV(rgb_img)
+
+    yuvd_img = np.concatenate([yuv_img, delta_img[...,np.newaxis]], axis=-1)
+
+    return yuvd_img
+
+def RGGB2YUVD(img):
+
+    img = img.astype(np.float32)
+
+    r_img = img[:,:,0]
+    g1_img = img[:,:,1]
+    g2_img = img[:,:,2]
+    b_img = img[:,:,3]
+
+    g_img = np.floor((g1_img + g2_img)/2)
+    delta_img = g1_img - g2_img
+
+    rgb_img = np.stack((r_img, g_img, b_img), axis=-1)
+    yuv_img = RGB2YUV(rgb_img)
+
+    yuvd_img = np.concatenate([yuv_img, delta_img[...,np.newaxis]], axis=-1)
+
+    return yuvd_img    
+
+def YUVD2RAW(img):
+
+    img = img.astype(np.float32)
+
+    y_img, u_img, v_img, delta_img = img[:,:,0], img[:,:,1], img[:,:,2], img[:,:,3]
+
+    yuv_img = np.stack((y_img, u_img, v_img), axis=-1)
+    rgb_img = YUV2RGB(yuv_img)
+    rgb_img = rgb_img.astype(np.float32)
+
+    r_img, g_img, b_img = rgb_img[:,:,0], rgb_img[:,:,1], rgb_img[:,:,2]
+
+    g1_img = np.ceil((g_img*2 + delta_img)/2)
+    g2_img = np.ceil((g_img*2 - delta_img)/2)
+
+    h, w, _ = img.shape
+
+    raw_img = np.zeros((2*h, 2*w), dtype=np.float32)
+
+    raw_img[0::2, 0::2] = r_img
+    raw_img[0::2, 1::2] = g1_img
+    raw_img[1::2, 0::2] = g2_img
+    raw_img[1::2, 1::2] = b_img
+
+    return raw_img
+
+
 def RGB2YUV(img):
 
     img = img.astype(np.float32)
@@ -34,18 +117,15 @@ def YUV2RGB(img):
 
 def pad_img(img):
 
-    C, H, W = img.shape
+    H, W, _ = img.shape
 
-    pad_h = (H % 2)
-    pad_w = (W % 2)
-    padding = (0,pad_w,0,pad_h)
+    pad_h = (4 - (H % 4)) % 4
+    pad_w = (4 - (W % 4)) % 4
+    padding = ((0, pad_h), (0, pad_w), (0,0))
 
-    pad_rep = torch.nn.ReplicationPad2d(padding)
-    img = pad_rep(img.unsqueeze(0))
-    img = img[0]
-    
+    img = np.pad(img, padding, 'edge')
+
     return img, (pad_h, pad_w)
-
 
 def space_to_depth_tensor(img, BLOCK_SIZE=2):
 

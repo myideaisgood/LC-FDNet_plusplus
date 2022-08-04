@@ -24,7 +24,7 @@ def encode_padding(padding, img_name, ENC_DIR):
     with open(filename, 'wb') as fout:
         fout.write(pad_bytes)    
 
-def encode_jpegxl(img_a, img_name, img_name_wo_space, H, W, ENC_DIR):
+def encode_flif(img_a, img_name, img_name_wo_space, H, W, ENC_DIR):
 
     start_time = time()
 
@@ -32,27 +32,26 @@ def encode_jpegxl(img_a, img_name, img_name_wo_space, H, W, ENC_DIR):
 
     img_a = (img_a.squeeze()).permute(1,2,0)
     img_a = img_a.numpy()
-    img_a = YUV2RGB(img_a)
-
-    img_a = cv2.cvtColor(img_a, cv2.COLOR_RGB2BGR)
+    img_a = YUVD2RAW(img_a)
+    img_a = img_a.astype(np.uint8)
     
     savename = img_name + '.png'
 
     cv2.imwrite(savename, img_a)
 
-    os.system('jpegxl/build/tools/cjxl "%s" %s -q 100' % (savename, ENC_DIR + img_name_wo_space + '/jpegxl.jxl'))
+    os.system('flif -e -Q100 "%s" %s' % (savename, ENC_DIR + img_name_wo_space + '/flif.flif'))
 
-    filesize = os.stat(ENC_DIR + img_name_wo_space + '/jpegxl.jxl').st_size
+    filesize = os.stat(ENC_DIR + img_name_wo_space + '/flif.flif').st_size
     
     end_time = time()
 
-    jpegxl_time = end_time - start_time
+    flif_time = end_time - start_time
 
     os.system('rm "%s"' % (savename))
 
-    jpegxl_bpp = 8*filesize / (H*W)
+    flif_bpp = 8*filesize / (H*W)
 
-    return jpegxl_bpp, jpegxl_time
+    return flif_bpp, flif_time
 
 def encode_convert_to_int_and_normalize(cdf_float, sym, check_input_bounds=False):
   if check_input_bounds:
@@ -144,24 +143,24 @@ def decode_padding(ENC_DIR, img_name):
     
     return list(pad_bytes)
 
-def decode_jpegxl(ENC_DIR, img_name):
+def decode_flif(ENC_DIR, img_name):
 
     tensor_transform = transforms.Compose(
         [transforms.ToTensor()]
     )
 
-    # Decode jpegxl
-    jpegxl_name = ENC_DIR + img_name + '/jpegxl.jxl'
+    # Decode flif
+    flif_name = ENC_DIR + img_name + '/flif.flif'
 
-    os.system('jpegxl/build/tools/djxl "%s" %s' % (jpegxl_name, 'output.png'))
+    os.system('flif -d "%s" %s' % (flif_name, 'output.png'))
 
     # img_a read
     img_a = cv2.imread('output.png')
-    img_a = cv2.cvtColor(img_a, cv2.COLOR_BGR2RGB)
+    img_a = img_a[:,:,0]
 
     os.system('rm "%s"' % ('output.png'))
 
-    img_a = RGB2YUV(img_a)
+    img_a = RAW2YUVD(img_a)
     img_a = tensor_transform(img_a)    
 
     return img_a
@@ -225,19 +224,28 @@ def read_img(img_name):
 
     img = cv2.cvtColor(cv2.imread(img_name),cv2.COLOR_BGR2RGB)
 
-    ori_img = img
-
-    img = RGB2YUV(img)
-    img = tensor_transform(img)
-
     img, padding = pad_img(img)
-    img = space_to_depth_tensor(img)
-
-    img_a, img_b, img_c, img_d = img[:,0], img[:,1], img[:,2], img[:,3]
     
+    raw_img = doCFA(img)
+
+    r_img = raw_img[0::2, 0::2]
+    g1_img = raw_img[0::2, 1::2]
+    g2_img = raw_img[1::2, 0::2]
+    b_img = raw_img[1::2, 1::2]
+
+    rggb_img = np.stack((r_img, g1_img, g2_img, b_img), axis=-1)
+
+    yuvd_img = RGGB2YUVD(rggb_img)
+
+    yuvd_img = tensor_transform(yuvd_img)
+
+    yuvd_img = space_to_depth_tensor(yuvd_img)
+
+    img_a, img_b, img_c, img_d = yuvd_img[:,0], yuvd_img[:,1], yuvd_img[:,2], yuvd_img[:,3]
+
     img_a, img_b, img_c, img_d = torch.unsqueeze(img_a, dim=0), torch.unsqueeze(img_b, dim=0), torch.unsqueeze(img_c, dim=0), torch.unsqueeze(img_d, dim=0)
 
-    return img_a, img_b, img_c, img_d, ori_img, img_name, padding
+    return img_a, img_b, img_c, img_d, raw_img, img_name, padding
 
 def abcd2img(imgs, color_names):
 
@@ -269,8 +277,7 @@ def abcd2img(imgs, color_names):
     output_img = torch.squeeze(output_img)
     output_img = output_img.permute(1,2,0)
     output_img = output_img.detach().cpu().numpy()
-    output_img = YUV2RGB(output_img)
-    output_img = cv2.cvtColor(output_img, cv2.COLOR_RGB2BGR)
+    output_img = YUVD2RAW(output_img)
 
     return output_img
 

@@ -47,7 +47,7 @@ def setup_networks(color_names, loc_names, logging, HIDDEN_UNIT):
     for color in color_names:
         networks[color] = {}
 
-    idx = 2
+    idx = 3
 
     for loc in loc_names:
         for color in color_names:
@@ -131,6 +131,8 @@ def abcd_unite(img_a, img_b, img_c, img_d, color_names):
             idx = 1
         elif color=='V':
             idx = 2
+        elif color=='D':
+            idx = 3
 
         img_color = {}
 
@@ -154,9 +156,9 @@ def get_inputs(imgs, color_names, loc_names):
     for color in color_names:
         inputs[color] = {}
 
-    gt_a = torch.cat([imgs['Y']['a'], imgs['U']['a'], imgs['V']['a']], dim=1)
-    gt_d = torch.cat([imgs['Y']['d'], imgs['U']['d'], imgs['V']['d']], dim=1) 
-    gt_b = torch.cat([imgs['Y']['b'], imgs['U']['b'], imgs['V']['b']], dim=1) 
+    gt_a = torch.cat([imgs['Y']['a'], imgs['U']['a'], imgs['V']['a'], imgs['D']['a']], dim=1)
+    gt_d = torch.cat([imgs['Y']['d'], imgs['U']['d'], imgs['V']['d'], imgs['D']['d']], dim=1) 
+    gt_b = torch.cat([imgs['Y']['b'], imgs['U']['b'], imgs['V']['b'], imgs['D']['b']], dim=1) 
 
     for loc in loc_names:
         
@@ -170,6 +172,7 @@ def get_inputs(imgs, color_names, loc_names):
         inputs['Y'][loc] = prev_loc
         inputs['U'][loc] = torch.cat([prev_loc, imgs['Y'][loc]], dim=1)
         inputs['V'][loc] = torch.cat([prev_loc, imgs['Y'][loc], imgs['U'][loc]], dim=1)
+        inputs['D'][loc] = torch.cat([prev_loc, imgs['Y'][loc], imgs['U'][loc], imgs['V'][loc]], dim=1)
 
     return inputs
 
@@ -312,50 +315,46 @@ def slice_img(img):
 
     return slice_img    
 
-def get_jpegxl_result(test_dataloader):
+def get_flif_result(test_dataloader):
 
     # JPEG-XL result of img a
-    jpegxl_bpp = []
-    jpegxl_avg_bpp = 0.0
-    jpegxl_avg_time = 0.0
+    flif_bpp = []
+    flif_avg_bpp = 0.0
+    flif_avg_time = 0.0
 
     for batch_idx, data in enumerate(test_dataloader):
         
-        img_a, _, _, _, _, img_name, _, _ = data
+        img_a, _, _, _, ori_img, img_name, _ = data
 
-        img_a = torch.unsqueeze(img_a, dim=2)
+        img_a = img_a[0].permute(1,2,0).numpy()
+        img_a = YUVD2RAW(img_a)
+        img_a = img_a.astype(np.uint8)
+        h, w = img_a.shape
 
-        img_a = (img_a.squeeze()).permute(1,2,0)
-        img_a = img_a.numpy()
-        img_a = YUV2RGB(img_a)
-        h,w,c = img_a.shape
-
-        img_a = cv2.cvtColor(img_a, cv2.COLOR_RGB2BGR)
-
-        savename = 'temp.png'
+        savename = img_name[0]
 
         cv2.imwrite(savename, img_a)
 
         start = time()
-        os.system('jpegxl/build/tools/cjxl "%s" output.jxl -q 100' % (savename))
+        os.system('flif -e -Q100 "%s" output.flif' % (savename))
         end = time()
 
-        filesize = os.stat('output.jxl').st_size
+        filesize = os.stat('output.flif').st_size
 
         bpp = 8*filesize / (4*h*w)
-        jpegxl_avg_bpp += bpp
-        jpegxl_avg_time += (end - start)
-        
-        jpegxl_bpp.append(bpp)
+        flif_avg_bpp += bpp
+        flif_avg_time += (end - start)
+
+        flif_bpp.append(bpp)
 
         logging.info("%s : %.4f" % (img_name, bpp))
 
         os.system('rm "%s"' % (savename))
-        os.system('rm %s' % ('output.jxl'))
+        os.system('rm %s' % ('output.flif'))
 
-    jpegxl_avg_bpp /= len(test_dataloader)
-    jpegxl_avg_time /= len(test_dataloader)
+    flif_avg_bpp /= len(test_dataloader)
+    flif_avg_time /= len(test_dataloader)
 
-    logging.info("JPEGXL Average BPP : %.4f,      Average Time : %.4f" % (jpegxl_avg_bpp, jpegxl_avg_time))    
+    logging.info("FLIF Average BPP : %.4f,      Average Time : %.4f" % (flif_avg_bpp, flif_avg_time))    
 
-    return jpegxl_bpp, jpegxl_avg_bpp, jpegxl_avg_time
+    return flif_bpp, flif_avg_bpp, flif_avg_time

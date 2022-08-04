@@ -37,7 +37,7 @@ def log_total_info(logging, total_bitrates, color_names, epoch_idx, optimizers, 
 # 0803.png, U Bitrate    d = 2.0224   b = 1.6492   c = 1.6328
 # 0803.png, V Bitrate    d = 2.0711   b = 1.6393   c = 1.6481
 # 0803.png, Total Bitrate = 5.4784   Y = 1.9241   U = 1.7681   V = 1.7862
-def log_img_info(logging, img_name, bitrates, jpegxl_bpp, color_names, loc_names):
+def log_img_info(logging, img_name, bitrates, flif_bpp, color_names, loc_names):
 
     # Color Results
     for color in color_names:
@@ -61,7 +61,7 @@ def log_img_info(logging, img_name, bitrates, jpegxl_bpp, color_names, loc_names
             color_bit += bitrates[color][loc].val()
         color_bits[color] = color_bit
 
-    out_tuple += (jpegxl_bpp + bitrates['total'].val(), jpegxl_bpp, bitrates['total'].val(), )
+    out_tuple += (flif_bpp + bitrates['total'].val(), flif_bpp, bitrates['total'].val(), )
 
     for color in color_names:
         out_string += '   %s = %.4f'
@@ -74,7 +74,7 @@ def log_img_info(logging, img_name, bitrates, jpegxl_bpp, color_names, loc_names
 # Avg BPP V   d = 9.4804   b = 9.2957   c = 9.2834
 # Avg BPP = 27.3199,   Y = 8.4292   U = 9.5375   V = 9.3532
 # Avg Enc time = 0.9506   Y = 0.2081   U = 0.3714   V = 0.3712
-def log_dataset_info(logging, bitrates, jpegxl_avg_bpp, enc_times, jpegxl_avg_time, color_names, loc_names, type='Avg'):
+def log_dataset_info(logging, bitrates, flif_avg_bpp, enc_times, flif_avg_time, color_names, loc_names, type='Avg'):
 
     assert (type=='Avg') or (type=='Best')
 
@@ -99,7 +99,7 @@ def log_dataset_info(logging, bitrates, jpegxl_avg_bpp, enc_times, jpegxl_avg_ti
             color_bit += bitrates[color][loc].avg()
         color_bits[color] = color_bit
 
-    out_tuple = (jpegxl_avg_bpp + bitrates['total'].avg(), jpegxl_avg_bpp, bitrates['total'].avg(), )
+    out_tuple = (flif_avg_bpp + bitrates['total'].avg(), flif_avg_bpp, bitrates['total'].avg(), )
 
     for color in color_names:
         out_string += '   %s = %.4f'
@@ -114,7 +114,7 @@ def log_dataset_info(logging, bitrates, jpegxl_avg_bpp, enc_times, jpegxl_avg_ti
     for loc in loc_names:
         total_time += enc_times[loc].avg()
 
-    out_tuple = (jpegxl_avg_time + total_time, jpegxl_avg_time, total_time)
+    out_tuple = (flif_avg_time + total_time, flif_avg_time, total_time)
 
     for loc in loc_names:
         out_string += '   %s = %.4f'
