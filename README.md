@@ -27,12 +27,31 @@ Compression result on CFA simulated Kodak samples.
 Train Dataset
 
 [SIDD] (https://www.eecs.yorku.ca/~kamel/sidd/dataset.php)
+
 [MIT5K] (https://data.csail.mit.edu/graphics/fivek/)
 
 Test Dataset
 
 [SIDD] (https://www.eecs.yorku.ca/~kamel/sidd/dataset.php)
+
 [MIT5K] (https://data.csail.mit.edu/graphics/fivek/)
+
+In the case of MIT5K, images used as the test set are specified in 'mit5k_testnames.txt'
+
+## Dataset Explanation
+SIDD
+
+We download the SIDD Dataset, which contains 160 images with a bit depth of 16.
+We convert the mat files into images.
+Then we place the images in 'dataset/SIDD16/train/' or 'dataset/SIDD16/test/'.
+Afterwards, when we run 'train.py' or 'eval.py', the dataloader of our code first determines the camera type of the image (GP, IP, S6, N6, G4).
+According to the camera type, we rearrange the image to be in the form of Bayer pattern RGGB.
+
+MIT5K
+
+We download the MIT5K Dataset, which contains 5,000 images with a bit depth of 10~14.
+Through 'mit2png.py', we first convert the MIT5K dataset, which is in the form of dng extension, to 16-bit png image.
+These 16-bit png images are all in the form of Bayer pattern RGGB.
 
 ## Brief explanation of contents
 
@@ -66,10 +85,10 @@ Your dataset directory should look something like the following
 
 ```
 |── dataset
-    ├──> div2k 
+    ├──> SIDD16 
          ├──> train
          └──> test  
-    ├──> Kodak
+    ├──> MIT5K
          ├──> train
          └──> test   
 
