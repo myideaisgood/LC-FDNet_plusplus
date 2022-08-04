@@ -1,7 +1,7 @@
 ## About Branches
 We provide 3 branches, where each branch is the code of the following implementation.
 
-This branch is 'Raw', where we perform lossless compression for 8-bit CFA sampled images.
+This branch is 'Raw16', where we perform lossless compression for 16-bit CFA sampled images.
 
 - Main Branch : Implementation for RGB image compression
 - Raw : Implementation for 8-bit raw image compression
@@ -26,16 +26,13 @@ Compression result on CFA simulated Kodak samples.
 ## Dataset
 Train Dataset
 
-[FLICKR2K] (https://github.com/limbee/NTIRE2017)
+[SIDD] (https://www.eecs.yorku.ca/~kamel/sidd/dataset.php)
+[MIT5K] (https://data.csail.mit.edu/graphics/fivek/)
 
 Test Dataset
 
-[DIV2K] (https://data.vision.ee.ethz.ch/cvl/DIV2K/)
-
-[CLIC] (http://clic.compression.cc/2019/challenge/)
-
-[Kodak] (http://r0k.us/graphics/kodak/)
-
+[SIDD] (https://www.eecs.yorku.ca/~kamel/sidd/dataset.php)
+[MIT5K] (https://data.csail.mit.edu/graphics/fivek/)
 
 ## Brief explanation of contents
 
