@@ -32,19 +32,19 @@ to color filter array (CFA) image compression and show that our method is also a
 
 ## Brief Description of Our Proposed Method
 ### Framework of our compresion scheme
-<p align="center"><img src="figure/framework.png" width="700"></p>
+<p align="center"><img src="figure/framework.PNG" width="700"></p>
 
 Illustration of the overall compression scheme. We first split the input into 12 subimages (four for each channel) depending on spatial location and color channel, where the border color of a subimage represents the color channel. Then, we compress the subimages one by one. The first 3 subimages (x_(Y,a), x_(U,a), x_(V,a)) are compressed using a conventional codec JPEG-XL, and the remaining 9 subimages are compressed using our LC-FDNet++. For the compression of the current subimage
 using the LC-FDNet++, previously compressed subimages are also used as inputs.
 
 ### Architecture of LC-FDNet++
-<p align="center"><img src="figure/architecture.png" width="700"></p>
+<p align="center"><img src="figure/architecture.PNG" width="700"></p>
 
 The encoder architecture of LC-FDNet++. In this figure, we consider the case of compressing y = x_(Y,d) given x_in = {x_(Y,a), x_(U,a), x_(V,a)}. The adaptive frequency decomposition (AFD) part first receives x_in and determines whether each pixel belongs to either low or high-frequency regions, using error variance map σy and error variance threshold τy that are explained in Subsection II-C. Then, the low-frequency compression (LFC) encodes the low-frequency region of the subimage y. The high-frequency compression (HFC) then receives the encoded low-frequency region as additional input and compresses the remaining high-frequency region.
 
 ## Experimental Results
 
-<p align="center"><img src="figure/result_table.png" width="600"></p>
+<p align="center"><img src="figure/result_table.PNG" width="600"></p>
 
 Comparison of our method and other non-learning and learning-based codecs on high-resolution benchmark datasets. We measure the performances in bits per pixel (bpp). The best performance is highlighted in bold. The difference in percentage to our method is highlighted in green if ours outperform and in red otherwise.
 
