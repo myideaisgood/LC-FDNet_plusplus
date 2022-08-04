@@ -1,6 +1,6 @@
 # LC-FDNet++
 
-# [Lossless COmpression of RGB and Raw Imags by Learning the Prediction and Frequency Decomposition]
+# [Lossless Compression of RGB and Raw Imags by Learning the Prediction and Frequency Decomposition]
 
 Hochang Rhee, Seyun Kim, Nam Ik Cho
 
