@@ -9,8 +9,6 @@ This branch is 'Raw16', where we perform lossless compression for 16-bit CFA sam
 
 
 ### LC-FDNet++ for CFA raw image compression
-<p align="center"><img src="figure/bayer.PNG" width="200"></p>
-
 We perform lossless image compression for raw images in this branch. Specifically, we execute compression for 16-bit raw images, which are in the form of RGGB.
 
 ## Experimental Results
