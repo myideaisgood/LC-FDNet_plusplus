@@ -1,6 +1,8 @@
 ## About Branches
 We provide 3 branches, where each branch is the code of the following implementation.
 
+This branch is 'Raw', where we perform lossless compression for 8-bit CFA sampled images.
+
 - Main Branch : Implementation for RGB image compression
 - Raw : Implementation for 8-bit raw image compression
 - Raw16 : Implementation for 16-bit raw image compression
