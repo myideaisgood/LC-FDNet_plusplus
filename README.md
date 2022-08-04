@@ -7,7 +7,7 @@ We provide 3 branches, where each branch is the code of the following implementa
 
 
 ### LC-FDNet++ for CFA raw image compression
-<p align="center"><img src="figure/bayer.PNG" width="500"></p>
+<p align="center"><img src="figure/bayer.PNG" width="100"></p>
 
 We perform lossless image compression for raw images in this branch. Specifically, we execute compression for 8-bit CFA sampled images, which are sampled by the above bayer pattern.
 
