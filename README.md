@@ -69,10 +69,10 @@ These 16-bit png images are all in the form of Bayer pattern RGGB.
          └──> test  : test images of dataset_name2 should be saved here         
 |── utils : files for utility functions
 |── config.py : configuration should be controlled only here 
-|── lcfdnet_plust_env.yml : virtual enviornment specification
 |── model.py : architecture of LC-FDNet++
 |── eval.py : evaluate the model
 |── train.py : train the model
+|── mit2png.py : Converts the dng raw file into RGGB png file. 
 └── flif : folder for flif library.
 
 ```
@@ -94,8 +94,6 @@ Your dataset directory should look something like the following
 
 ```
 
-Note that we do not provide an automatic code for generating the downsample version of the dataset.
-
 ## Guidelines for Training / Evaluation Codes
 
 1. Install FLIF
@@ -104,9 +102,19 @@ Note that we do not provide an automatic code for generating the downsample vers
 
 2. Check configurations from config.py
 
+2.5. In the case of MIT5K
+     place mit5k train images in dataset/mit_dng/train and
+     place mit5k test images in dataset/mit_dng/test.
+     Then run mit2png for subset 'train' and 'test' (line 11 for mit2png.py).
+     The images will be saved in mit16/train and mit16/test, which are in the form of RGGB png image.
+
 3. Run the following command for training  the network
 ```
-python train.py --gpu_num=0 --experiment_name='default/' --train_dataset='flickr/' --test_dataset='div2k/'
+python train.py --gpu_num=0 --experiment_name='default/' --train_dataset='SIDD16/' --test_dataset='SIDD16/'
+
+or
+
+python train.py --gpu_num=0 --experiment_name='default/' --train_dataset='mit16/' --test_dataset='mit16/'
 ```
 
 The trained model will be saved in the following directory : experiments/default/ckpt
@@ -115,7 +123,11 @@ The trained model will be saved in the following directory : experiments/default
    
    **** parameter empty_cache in config.py should be set to True if memory issue occurs ****
 ```
-python eval.py --gpu_num=0 --experiment_name='default/' --test_dataset='div2k/' --empty_cache=True
+python eval.py --gpu_num=0 --experiment_name='default/' --test_dataset='SIDD/' --empty_cache=True
+
+or
+
+python eval.py --gpu_num=0 --experiment_name='default/' --test_dataset='mit16/' --empty_cache=True
 ```
 
 ## Guidelines for running Pretrained Network for Evaluation
@@ -123,6 +135,10 @@ python eval.py --gpu_num=0 --experiment_name='default/' --test_dataset='div2k/' 
    
    **** parameter empty_cache in config.py should be set to True if memory issue occurs ****
 ```
-python eval.py --gpu_num=0 --experiment_name='pretrained/' --test_dataset='div2k/' --empty_cache=True
+python eval.py --gpu_num=0 --experiment_name='SIDD_pretrained/' --test_dataset='SIDD16/' --empty_cache=True
+
+or
+
+python eval.py --gpu_num=0 --experiment_name='mit16_pretrained/' --test_dataset='mit16/' --empty_cache=True
 ```
 If you wish to evaluate for different dataset, just change the configuration parameter.
